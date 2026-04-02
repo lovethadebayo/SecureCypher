@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SecureCypher | Advanced Encryption Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f7fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #4a5568;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .btn-primary, .btn-secondary {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-1px);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            justify-content: flex-end;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            justify-content: flex-end;
+        }
+
+        .icon-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .icon-btn:hover {
+            background: #edf2f7;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .file-info {
+            background: #f7fafc;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 16px;
+            }
+            .tab-content {
+                padding: 20px;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-shield-alt"></i> SecureCypher</h1>
+            <p>Advanced Text & File Encryption Tool</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('text')">Text Mode</button>
+            <button class="tab-btn" onclick="switchTab('file')">File Mode</button>
+        </div>
+
+        <!-- Text Mode -->
+        <div id="textMode" class="tab-content active">
+            <!-- Input Text -->
+            <div class="form-group">
+                <label>Input Text</label>
+                <textarea id="inputText" rows="4" placeholder="Enter text to encrypt OR paste encrypted text to decrypt..."></textarea>
+                <div class="input-actions">
+                    <button class="icon-btn" onclick="copyToClipboard('inputText')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button class="icon-btn" onclick="clearField('inputText')">
+                        <i class="fas fa-eraser"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Algorithm -->
+            <div class="form-group">
+                <label>Algorithm</label>
+                <select id="algorithm">
+                    <option value="aes-256-cbc">AES-256-CBC (Most Secure)</option>
+                    <option value="aes-128-cbc">AES-128-CBC</option>
+                    <option value="triple-des">Triple DES</option>
+                    <option value="des">DES (8-char key only)</option>
+                    <option value="blowfish">Blowfish</option>
+                    <option value="rsa">RSA (Requires Key Pair)</option>
+                </select>
+            </div>
+
+            <!-- Key -->
+            <div class="form-group">
+                <label>Key</label>
+                <div class="password-wrapper">
+                    <input type="password" id="encryptionKey" placeholder="Enter your secret key">
+                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility('encryptionKey', this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <small class="hint">Keep this key safe. You'll need it to decrypt.</small>
+            </div>
+
+            <div id="rsaKeySection" style="display:none;">
+                <div class="form-group">
+                    <label>RSA Public Key</label>
+                    <textarea id="publicKey" rows="3" placeholder="Paste RSA public key here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>RSA Private Key</label>
+                    <textarea id="privateKey" rows="3" placeholder="Paste RSA private key here..."></textarea>
+                    <button type="button" class="icon-btn" style="margin-top:8px;" onclick="generateRSAKeys()">Generate New Key Pair</button>
+                </div>
+            </div>
+
+            <!-- Encrypt & Decrypt Buttons -->
+            <div class="action-buttons">
+                <button class="btn-primary" onclick="encrypt()">
+                    <i class="fas fa-lock"></i> Encrypt
+                </button>
+                <button class="btn-secondary" onclick="decrypt()">
+                    <i class="fas fa-unlock-alt"></i> Decrypt
+                </button>
+            </div>
+
+            <!-- Result Section -->
+            <div class="form-group">
+                <label>Result</label>
+                <textarea id="resultText" rows="4" readonly placeholder="Encrypted or decrypted result will appear here..."></textarea>
+                <div class="result-actions">
+                    <button class="icon-btn" onclick="copyToClipboard('resultText')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button class="icon-btn" onclick="saveAsFile()">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button class="icon-btn" onclick="clearField('resultText')">
+                        <i class="fas fa-eraser"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Mode -->
+        <div id="fileMode" class="tab-content">
+            <!-- Select File -->
+            <div class="form-group">
+                <label>Select File</label>
+                <input type="file" id="fileInput">
+            </div>
+
+            <div id="fileInfo" class="file-info">
+                <i class="fas fa-info-circle"></i> No file selected
+            </div>
+
+            <!-- Algorithm -->
+            <div class="form-group">
+                <label>Algorithm</label>
+                <select id="fileAlgorithm">
+                    <option value="aes-256-cbc">AES-256-CBC (Most Secure)</option>
+                    <option value="aes-128-cbc">AES-128-CBC</option>
+                    <option value="triple-des">Triple DES</option>
+                    <option value="des">DES (8-char key only)</option>
+                    <option value="blowfish">Blowfish</option>
+                </select>
+            </div>
+
+            <!-- Key -->
+            <div class="form-group">
+                <label>Key</label>
+                <div class="password-wrapper">
+                    <input type="password" id="fileEncryptionKey" placeholder="Enter your secret key">
+                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility('fileEncryptionKey', this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <small class="hint">Keep this key safe. You'll need it to decrypt.</small>
+            </div>
+
+            <!-- Encrypt & Decrypt File Buttons -->
+            <div class="action-buttons">
+                <button class="btn-primary" onclick="encryptFile()">
+                    <i class="fas fa-lock"></i> Encrypt File
+                </button>
+                <button class="btn-secondary" onclick="decryptFile()">
+                    <i class="fas fa-unlock-alt"></i> Decrypt File
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
